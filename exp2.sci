@@ -1,0 +1,12 @@
+a = imread("D:\C Download\pexels-quang-nguyen-vinh-222549-2563129.jpg");
+subplot(1,3,1);
+imshow(a);
+title("Original Image");
+j = rgb2gray(a);
+subplot(1,3,2);
+imshow(j);
+title("Gray image");
+subplot(1,3,3);
+jcolormap = coolcolormap(60);
+imshow(jcolormap);
+title("Gray shade");
