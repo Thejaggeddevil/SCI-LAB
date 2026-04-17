@@ -1,0 +1,80 @@
+clc; 
+clear; 
+close all;
+
+% Read image
+img =imread('/MATLAB Drive/matlab3.png'); 
+
+% Convert to grayscale
+gray_img = rgb2gray(img);
+
+%% ---------- Original RGB Histogram ----------
+[counts_R, ~] = histcounts(double(img(:,:,1)), 0:256);
+[counts_G, ~] = histcounts(double(img(:,:,2)), 0:256);
+[counts_B, ~] = histcounts(double(img(:,:,3)), 0:256);
+hist_rgb = counts_R + counts_G + counts_B;
+
+figure;
+subplot(2,2,1);
+imshow(img);
+title('Original RGB Image');
+
+subplot(2,2,2);
+bar(0:255, hist_rgb);
+title('Histogram of Original RGB Image');
+xlabel('Pixel Value'); ylabel('Pixel Count');
+
+%% ---------- Contrast Enhanced RGB ----------
+min_R = double(min(img(:,:,1), [], 'all'));
+max_R = double(max(img(:,:,1), [], 'all'));
+min_G = double(min(img(:,:,2), [], 'all'));
+max_G = double(max(img(:,:,2), [], 'all'));
+min_B = double(min(img(:,:,3), [], 'all'));
+max_B = double(max(img(:,:,3), [], 'all'));
+
+R = uint8(255 * (double(img(:,:,1)) - min_R) / (max_R - min_R));
+G = uint8(255 * (double(img(:,:,2)) - min_G) / (max_G - min_G));
+B = uint8(255 * (double(img(:,:,3)) - min_B) / (max_B - min_B));
+
+contrast_rgb = cat(3, R, G, B);
+
+[counts_Rc, ~] = histcounts(double(R), 0:256);
+[counts_Gc, ~] = histcounts(double(G), 0:256);
+[counts_Bc, ~] = histcounts(double(B), 0:256);
+hist_contrast = counts_Rc + counts_Gc + counts_Bc;
+
+subplot(2,2,3);
+imshow(contrast_rgb);
+title('Contrast-enhanced RGB Image');
+
+subplot(2,2,4);
+bar(0:255, hist_contrast);
+title('Histogram of Contrast RGB Image');
+xlabel('Pixel Value'); ylabel('Pixel Count');
+
+%% ---------- Grayscale Image + Histogram ----------
+figure;
+subplot(2,2,1);
+imshow(gray_img);
+title('Grayscale Image');
+
+[counts_gray, ~] = histcounts(double(gray_img), 0:256);
+
+subplot(2,2,2);
+bar(0:255, counts_gray);
+title('Histogram of Grayscale Image');
+xlabel('Gray Level'); ylabel('Pixel Count');
+
+%% ---------- Histogram Equalized Grayscale ----------
+eq_gray = histeq(gray_img);
+
+subplot(2,2,3);
+imshow(eq_gray);
+title('Histogram Equalized Image');
+
+[counts_eq, ~] = histcounts(double(eq_gray), 0:256);
+
+subplot(2,2,4);
+bar(0:255, counts_eq);
+title('Histogram of Equalized Image');
+xlabel('Gray Level'); ylabel('Pixel Count');
